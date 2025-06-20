@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modération des commentaires{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Modération des commentaires</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Livre</th>
+                    <th>Commentaire</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comment in comments %}
+                    <tr>
+                        <td>{{ comment.createdAt|date('d/m/Y H:i') }}</td>
+                        <td>{{ comment.name }}</td>
+                        <td>{{ comment.email }}</td>
+                        <td>{{ comment.book.title }}</td>
+                        <td>{{ comment.content }}</td>
+                        <td>{{ comment.status.value }}</td>
+                        <td>
+                            {% if comment.status.value == 'pending' %}
+                                <form method="post" action="{{ path('app_admin_comment_approve', {id: comment.id}) }}" style="display: inline;">
+                                    <button class="btn btn-success btn-sm">Approuver</button>
+                                </form>
+                                <form method="post" action="{{ path('app_admin_comment_reject', {id: comment.id}) }}" style="display: inline;">
+                                    <button class="btn btn-danger btn-sm">Rejeter</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
