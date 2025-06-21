@@ -30,5 +30,10 @@
         {% endif %}
         <a href="{{ path('app_admin_author_index') }}" class="btn btn-primary">Retour</a>
         <a href="{{ path('app_admin_author_edit', {id: author.id}) }}" class="btn btn-warning">Éditer</a>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_admin_author_delete', {'id': author.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet auteur ?');" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Supprimer
+            </a>
+        {% endif %}
     </div>
 {% endblock %}

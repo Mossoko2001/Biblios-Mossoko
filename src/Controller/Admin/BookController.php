@@ -65,4 +65,14 @@ final class BookController extends AbstractController
             'book' => $book,
         ]);
     }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/{id}/delete', name: 'app_admin_book_delete', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function delete(Book $book, EntityManagerInterface $manager): Response
+    {
+        $manager->remove($book);
+        $manager->flush();
+        $this->addFlash('success', 'Le livre a été supprimé avec succès.');
+        return $this->redirectToRoute('app_admin_book_index');
+    }
 }

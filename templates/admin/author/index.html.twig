@@ -9,7 +9,14 @@
 </style>
 
 <section class="container pg-4">
-    <h1>Liste des auteurs</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Liste des auteurs</h1>
+        {% if is_granted('ROLE_AJOUT_DE_LIVRE') %}
+            <a href="{{ path('app_admin_author_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nouvel auteur
+            </a>
+        {% endif %}
+    </div>
 
     <ul class="list-group list-group-flush">
         {% for author in authors%}
@@ -19,7 +26,10 @@
                         <a href="{{ path('app_admin_author_show', {'id': author.id}) }}" class="stretched-link link-dark">
                             <h4>{{author.name}}</h4>
                         </a>
-                        <small class="text-muted">Identifiant: {{author.id}}</small>
+                        <div class="d-flex align-items-center">
+                            <small class="text-muted me-3">Identifiant: {{author.id}}</small>
+                            
+                        </div>
                     </div>
                 </div>
             </div>

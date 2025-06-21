@@ -62,4 +62,14 @@ final class EditorController extends AbstractController
             'editor' => $editor,
         ]);
     }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/{id}/delete', name: 'app_admin_editor_delete', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function delete(Editor $editor, EntityManagerInterface $manager): Response
+    {
+        $manager->remove($editor);
+        $manager->flush();
+        $this->addFlash('success', 'L\'éditeur a été supprimé avec succès.');
+        return $this->redirectToRoute('app_admin_editor_index');
+    }
 }

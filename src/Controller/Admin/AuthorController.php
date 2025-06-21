@@ -72,4 +72,14 @@ final class AuthorController extends AbstractController
             'author' => $author,
         ]);
     }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/{id}/delete', name: 'app_admin_author_delete', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function delete(Author $author, EntityManagerInterface $manager): Response
+    {
+        $manager->remove($author);
+        $manager->flush();
+        $this->addFlash('success', 'L\'auteur a été supprimé avec succès.');
+        return $this->redirectToRoute('app_admin_author_index');
+    }
 }
