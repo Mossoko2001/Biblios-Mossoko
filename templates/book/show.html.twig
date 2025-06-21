@@ -26,7 +26,14 @@
                         <span>Statut: {{ book.status.getLabel() }}</span>
                     </div>
                     <p class="lead">{{ book.plot }}</p>
-                    <div class="d-flex">
+                    <div class="d-flex gap-2">
+                        {% if is_granted('ROLE_USER') %}
+                            <form method="post" action="{{ path('app_loan_borrow', {'id': book.id}) }}">
+                                <button class="btn btn-primary flex-shrink-0" type="submit">
+                                    Emprunter ce livre
+                                </button>
+                            </form>
+                        {% endif %}
                         <a href="{{ path('app_book_index') }}">
                             <button class="btn btn-outline-dark flex-shrink-0" type="button">
                                 Retour à la liste

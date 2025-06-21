@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Emprunts{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Gestion des Emprunts</h1>
+
+        <h2 class="mt-4">Emprunts en cours</h2>
+        {% if current_loans is empty %}
+            <p>Aucun emprunt en cours.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Livre</th>
+                            <th>Emprunté le</th>
+                            <th>À retourner avant le</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in current_loans %}
+                            <tr>
+                                <td>{{ loan.user.email }}</td>
+                                <td>{{ loan.book.title }}</td>
+                                <td>{{ loan.borrowedAt|date('d/m/Y') }}</td>
+                                <td>{{ loan.dueDate|date('d/m/Y') }}</td>
+                                <td>
+                                    {% if loan.isOverdue %}
+                                        <span class="badge bg-danger">En retard</span>
+                                    {% else %}
+                                        <span class="badge bg-success">En cours</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        <h2 class="mt-4">Emprunts en retard</h2>
+        {% if overdue_loans is empty %}
+            <p>Aucun emprunt en retard.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Utilisateur</th>
+                            <th>Livre</th>
+                            <th>Emprunté le</th>
+                            <th>Retard depuis le</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in overdue_loans %}
+                            <tr>
+                                <td>{{ loan.user.email }}</td>
+                                <td>{{ loan.book.title }}</td>
+                                <td>{{ loan.borrowedAt|date('d/m/Y') }}</td>
+                                <td>{{ loan.dueDate|date('d/m/Y') }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('app_loan_return', {'id': loan.id}) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-warning btn-sm">Marquer comme retourné</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

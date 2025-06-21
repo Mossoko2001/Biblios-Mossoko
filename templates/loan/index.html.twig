@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Emprunts{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Mes Emprunts</h1>
+
+        <h2 class="mt-4">Emprunts en cours</h2>
+        {% if active_loans is empty %}
+            <p>Vous n'avez aucun emprunt en cours.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Livre</th>
+                            <th>Emprunté le</th>
+                            <th>À retourner avant le</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in active_loans %}
+                            <tr>
+                                <td>{{ loan.book.title }}</td>
+                                <td>{{ loan.borrowedAt|date('d/m/Y') }}</td>
+                                <td>{{ loan.dueDate|date('d/m/Y') }}</td>
+                                <td>
+                                    {% if loan.isOverdue %}
+                                        <span class="badge bg-danger">En retard</span>
+                                    {% else %}
+                                        <span class="badge bg-success">En cours</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="post" action="{{ path('app_loan_return', {'id': loan.id}) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-primary btn-sm">Retourner</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        <h2 class="mt-4">Historique des emprunts</h2>
+        {% if loan_history is empty %}
+            <p>Aucun historique d'emprunt.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Livre</th>
+                            <th>Emprunté le</th>
+                            <th>Retourné le</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in loan_history %}
+                            {% if loan.status == 'returned' %}
+                                <tr>
+                                    <td>{{ loan.book.title }}</td>
+                                    <td>{{ loan.borrowedAt|date('d/m/Y') }}</td>
+                                    <td>{{ loan.returnedAt|date('d/m/Y') }}</td>
+                                    <td><span class="badge bg-secondary">Retourné</span></td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
